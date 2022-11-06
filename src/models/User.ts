@@ -1,6 +1,6 @@
-export interface BaseUser {
+export interface User {
+    uuid: number;
     username: string;
-    roles: string[];
     firstName: string;
     lastName: string;
     avatar: string;
@@ -9,6 +9,22 @@ export interface BaseUser {
     website: string;
 }
 
-export interface User extends BaseUser {
-    uuid: number;
+export interface UserCreationRequest {
+    username: string;
+    firstName: string;
+    lastName: string;
+    avatar: string;
+    bio: string;
+    location: string;
+    website: string;
+}
+
+export interface UserUpdateRequest {
+    username: string;
+    firstName: string;
+    lastName: string;
+    avatar: string;
+    bio: string;
+    location: string;
+    website: string;
 }

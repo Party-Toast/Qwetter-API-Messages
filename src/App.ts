@@ -15,7 +15,7 @@ class App {
     }
 
     private initializeMiddlewares() {
-        this.app.use(json())
+        this.app.use(json());
     }
     // TODO: Create controller interface class to replace any
     private initializeControllers(controllers: Array<any>) {

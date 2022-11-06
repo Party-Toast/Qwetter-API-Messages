@@ -9,8 +9,9 @@ const app = new App(
   [
     new UserController()
   ],
-  port,
+  port
 );
 
 app.listen();
- 
+
+export default app;

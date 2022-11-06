@@ -1,9 +1,6 @@
 const schema = {
     "type": "object",
     "properties": {
-        "uuid": {
-            "type": "number"
-        },
         "username": {
             "type": "string"
         },
@@ -33,7 +30,6 @@ const schema = {
         "lastName",
         "location",
         "username",
-        "uuid",
         "website"
     ]
 } as const;
