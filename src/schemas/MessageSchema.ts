@@ -1,6 +1,12 @@
 const schema = {
     "type": "object",
     "properties": {
+        "uuid": {
+            "type": "number"
+        },
+        "user_uuid": {
+            "type": "number"
+        },
         "username": {
             "type": "string"
         },
@@ -13,24 +19,23 @@ const schema = {
         "avatar": {
             "type": "string"
         },
-        "bio": {
+        "content": {
             "type": "string"
         },
-        "location": {
-            "type": "string"
-        },
-        "website": {
-            "type": "string"
+        "timestamp": {
+            "type": "string",
+            "format": "date-time"
         }
     },
     "required": [
         "avatar",
-        "bio",
+        "content",
         "firstName",
         "lastName",
-        "location",
+        "timestamp",
+        "user_uuid",
         "username",
-        "website"
+        "uuid"
     ]
 } as const;
 export default schema;

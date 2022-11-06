@@ -1,8 +1,8 @@
-# Qwetter users API
+# Qwetter messages API
 
 ## Description
 
-A RESTful API used for handling user data for the Qwetter web application.
+A RESTful API used for handling message data for the Qwetter web application.
 
 ## Setup
 Run `npm install` to install required dependencies.
@@ -16,5 +16,5 @@ Run `npm install` to install required dependencies.
 | `npm run dev`             | Run development server  |
 | `npm run test`            | Run tests (Mocha)  |
 | `npm run schema`          | Dev tool; generate schemas for the models (required for API type validation)  |
-| `npm run docker-build`    | Build docker image as "qwetter-api-users"  |
+| `npm run docker-build`    | Build docker image as "qwetter-api-messages"  |
 | `npm run docker-run`      | Deploy docker image in local container  |
