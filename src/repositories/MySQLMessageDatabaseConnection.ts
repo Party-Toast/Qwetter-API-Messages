@@ -11,7 +11,7 @@ const messages: Array<Message> = [
         username: 'JDoe',
         avatar: 'INSERT_AVATAR',
         content: 'Hello world',
-        timestamp: new Date()
+        timestamp: new Date().toISOString()
     },
     {
         uuid: 1,
@@ -21,7 +21,7 @@ const messages: Array<Message> = [
         username: 'SytseWalraven',
         avatar: 'INSERT_AVATAR',
         content: 'Goodbye world',
-        timestamp: new Date()
+        timestamp: new Date().toISOString()
     },
     {
         uuid: 2,
@@ -31,7 +31,7 @@ const messages: Array<Message> = [
         username: 'JDoe',
         avatar: 'INSERT_AVATAR',
         content: 'Hello again',
-        timestamp: new Date()
+        timestamp: new Date().toISOString()
     },
 ]
 

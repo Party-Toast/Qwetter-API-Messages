@@ -10,8 +10,7 @@ export default class MessageController {
     public router = Router();
     public messageService: MessageService;
     public validator = new SchemaValidator();
-    // TODO: fix AJV to allow 'Date' class
-    // public mcrs: JSONSchemaType<MessageCreationRequest> = MessageCreationRequestSchema;
+    public messageCreationRequestSchema: JSONSchemaType<MessageCreationRequest> = MessageCreationRequestSchema;
 
     constructor() {
         this.intializeRoutes();
@@ -22,7 +21,7 @@ export default class MessageController {
         this.router.get(this.path, this.getAllMessages);
         this.router.get(`${this.path}/:uuid`, this.getMessageById);
         this.router.get(`${this.path}/user/:user_uuid`, this.getMessagesByUserId);
-        // this.router.post(this.path, this.validator.validateBody(this.messageCreationRequestSchema), this.createMessage);
+        this.router.post(this.path, this.validator.validateBody(this.messageCreationRequestSchema), this.createMessage);
         this.router.delete(`${this.path}/:uuid`, this.deleteMessage);
     }
     

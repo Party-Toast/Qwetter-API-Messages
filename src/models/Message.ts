@@ -8,7 +8,7 @@ export interface Message {
     lastName: string;
     avatar: string;
     content: string;
-    timestamp: Date;
+    timestamp: string;
 }
 
 export interface MessageCreationRequest {
@@ -18,6 +18,6 @@ export interface MessageCreationRequest {
     lastName: string;
     avatar: string;
     content: string;
-    timestamp: Date;
+    timestamp: string;
 }
 

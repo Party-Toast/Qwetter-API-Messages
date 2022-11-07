@@ -20,8 +20,7 @@ const schema = {
             "type": "string"
         },
         "timestamp": {
-            "type": "string",
-            "format": "date-time"
+            "type": "string"
         }
     },
     "required": [

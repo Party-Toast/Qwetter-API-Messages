@@ -3,8 +3,12 @@ import { SomeJSONSchema } from 'ajv/dist/types/json-schema';
 import { Request, Response } from 'express';
 
 class SchemaValidator {
-    public ajv: Ajv = new Ajv();
+    public ajv: Ajv;
 
+    constructor() {
+      this.ajv = new Ajv();
+    }
+    
     public validateBody(schema: SomeJSONSchema) {
         // Compile schema
         const validate = this.ajv.compile(schema);
