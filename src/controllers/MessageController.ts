@@ -1,20 +1,25 @@
 import { JSONSchemaType } from 'ajv';
 import { Router, Request, Response } from 'express';
-import { MessageCreationRequest } from '../models/Message';
+import { MessageCreationRequest, MessageLikeRequest, MessageUndoLikeRequest } from '../models/Message';
 import MessageService from '../services/MessageService';
 import SchemaValidator from '../utils/SchemaValidator';
 import MessageCreationRequestSchema from '../schemas/MessageCreationRequestSchema';
+import MessageLikeRequestSchema from '../schemas/MessageLikeRequestSchema';
+import MessageUndoLikeRequestSchema from '../schemas/MessageUndoLikeRequestSchema';
 
 export default class MessageController {
     public path = '/messages';
     public router = Router();
     public messageService: MessageService;
-    public validator = new SchemaValidator();
+    public validator: SchemaValidator;
     public messageCreationRequestSchema: JSONSchemaType<MessageCreationRequest> = MessageCreationRequestSchema;
+    public messageLikeRequestSchema: JSONSchemaType<MessageLikeRequest> = MessageLikeRequestSchema;
+    public messageUndoLikeRequestSchema: JSONSchemaType<MessageUndoLikeRequest> = MessageUndoLikeRequestSchema;
 
     constructor() {
-        this.intializeRoutes();
+        this.validator = new SchemaValidator();
         this.messageService = new MessageService();
+        this.intializeRoutes();
     }
 
     public intializeRoutes() {
@@ -22,6 +27,8 @@ export default class MessageController {
         this.router.get(`${this.path}/:uuid`, this.getMessageById);
         this.router.get(`${this.path}/user/:user_uuid`, this.getMessagesByUserId);
         this.router.post(this.path, this.validator.validateBody(this.messageCreationRequestSchema), this.createMessage);
+        this.router.post(`${this.path}/like/:uuid`, this.validator.validateBody(this.messageLikeRequestSchema), this.likeMessage);
+        this.router.post(`${this.path}/undo_like/:uuid`, this.validator.validateBody(this.messageUndoLikeRequestSchema), this.undoLikeMessage);
         this.router.delete(`${this.path}/:uuid`, this.deleteMessage);
     }
     
@@ -36,7 +43,7 @@ export default class MessageController {
         const uuid: number = parseInt(request.params.uuid);
         this.messageService.getMessageById(uuid).then((message) => {
             if(message === undefined) {
-                response.status(404).send(`No message with uuid ${uuid} was found.`)
+                response.status(404).send(`No message with uuid ${uuid} was found.`);
             }
             response.send(message);
         })
@@ -56,7 +63,7 @@ export default class MessageController {
 
         this.messageService.getMessagesByUserId(user_uuid, page, per_page).then((messages) => {
             if(messages === undefined) {
-                response.status(404).send(`No user with uuid ${user_uuid} was found.`)
+                response.status(404).send(`No user with uuid ${user_uuid} was found.`);
             }
             response.send(messages);
         })
@@ -71,6 +78,27 @@ export default class MessageController {
         });
     }
 
+    public likeMessage = async (request: Request, response: Response) => {
+        const uuid: number = parseInt(request.params.uuid);
+        const messageLikeRequest: MessageLikeRequest = request.body;
+        this.messageService.likeMessage(uuid, messageLikeRequest).then((message) => {
+            if(message === undefined) {
+                response.status(404).send(`No message with uuid ${uuid} was found.`);
+            }
+            response.send(message);
+        })
+    }
+    
+    public undoLikeMessage = async (request: Request, response: Response) => {
+        const uuid: number = parseInt(request.params.uuid);
+        const messageUndoLikeRequest: MessageUndoLikeRequest = request.body;
+        this.messageService.undoLikeMessage(uuid, messageUndoLikeRequest).then((message) => {
+            if(message === undefined) {
+                response.status(404).send(`No message with uuid ${uuid} was found.`);
+            }
+            response.send(message);
+        })
+    }
     // DELETE
     public deleteMessage = async (request: Request, response: Response) => {
         const uuid: number = parseInt(request.params.uuid);

@@ -1,5 +1,5 @@
 import MySQLMessageDatabaseConnection from "../repositories/MySQLMessageDatabaseConnection";
-import { Message, MessageCreationRequest } from "../models/Message";
+import { Message, MessageCreationRequest, MessageLikeRequest, MessageUndoLikeRequest } from "../models/Message";
 
 export default class MessageService {
     public databaseConnection: MySQLMessageDatabaseConnection;
@@ -33,6 +33,13 @@ export default class MessageService {
         return this.databaseConnection.createMessage(message);
     };  
 
+    public likeMessage = async (uuid: number, user: MessageLikeRequest): Promise<Message | undefined> => {
+        return this.databaseConnection.likeMessage(uuid, user);
+    }
+    
+    public undoLikeMessage = async (uuid: number, user: MessageUndoLikeRequest): Promise<Message | undefined> => {
+        return this.databaseConnection.undoLikeMessage(uuid, user);
+    }
 
     public deleteMessage = async (uuid: number): Promise<Message | undefined> => {
         return this.databaseConnection.deleteMessage(uuid);  

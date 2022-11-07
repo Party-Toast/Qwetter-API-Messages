@@ -1,4 +1,4 @@
-import { Message, MessageCreationRequest } from "../models/Message";
+import { Message, MessageCreationRequest, MessageLikeRequest, MessageUndoLikeRequest } from "../models/Message";
 import IDatabaseConnection from "./IMessageDatabaseConnection";
 import mysql from 'mysql';
 
@@ -11,7 +11,10 @@ const messages: Array<Message> = [
         username: 'JDoe',
         avatar: 'INSERT_AVATAR',
         content: 'Hello world',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        liked_user_uuids: [
+            1
+        ]
     },
     {
         uuid: 1,
@@ -21,7 +24,10 @@ const messages: Array<Message> = [
         username: 'SytseWalraven',
         avatar: 'INSERT_AVATAR',
         content: 'Goodbye world',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        liked_user_uuids: [
+            0
+        ]
     },
     {
         uuid: 2,
@@ -31,7 +37,8 @@ const messages: Array<Message> = [
         username: 'JDoe',
         avatar: 'INSERT_AVATAR',
         content: 'Hello again',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        liked_user_uuids: []
     },
 ]
 
@@ -88,11 +95,50 @@ export default class MySQLMessageDatabaseConnection implements IDatabaseConnecti
             avatar: message.avatar,
             content: message.content,
             timestamp: message.timestamp,
+            liked_user_uuids: []
         }
         messages.push(newMessage);
         return newMessage;
     } 
 
+    public likeMessage = async (uuid: number, user: MessageLikeRequest): Promise<Message | undefined> => {
+        // If there exists no message with the provided UUID, return undefined
+        const index = messages.findIndex(message => message.uuid === uuid);
+        if(index === -1) {
+            return undefined;
+        }
+
+        // If the message has already been liked by the user, just return the message
+        const message = messages[index];
+        const user_uuid = user.user_uuid;
+        if(message.liked_user_uuids.includes(user_uuid)) {
+            return message;
+        }
+
+        // Else add the user's UUID to the array of user UUIDs that liked the message, then return the message
+        message.liked_user_uuids.push(user_uuid);
+        return message;
+    }
+    
+    public undoLikeMessage = async (uuid: number, user: MessageUndoLikeRequest): Promise<Message | undefined> => {
+        // If there exists no message with the provided UUID, return undefined
+        const messageIndex = messages.findIndex(message => message.uuid === uuid);
+        if(messageIndex === -1) {
+            return undefined;
+        }
+
+        // If the message has not been like by the user yet, just return the message
+        const message = messages[messageIndex];
+        const user_uuid = user.user_uuid;
+        const userIndex = message.liked_user_uuids.indexOf(user_uuid);
+        if(userIndex === -1) {
+            return message;
+        }
+
+        // Else remove the user's UUID from the array of user UUIDs that liked the message, then return the message
+        message.liked_user_uuids.splice(userIndex, 1);
+        return message;
+    }
     public deleteMessage = async (uuid: number): Promise<Message | undefined> => {
         const index = messages.findIndex(message => message.uuid === uuid);
         if(index === -1) {

@@ -1,5 +1,3 @@
-// TODO: add favorites property (array of user_uuids)
-
 export interface Message {
     uuid: number;
     user_uuid: number;
@@ -9,6 +7,7 @@ export interface Message {
     avatar: string;
     content: string;
     timestamp: string;
+    liked_user_uuids: Array<number>; // Array of user UUIDs
 }
 
 export interface MessageCreationRequest {
@@ -19,5 +18,13 @@ export interface MessageCreationRequest {
     avatar: string;
     content: string;
     timestamp: string;
+    liked_user_uuids: string;
 }
 
+export interface MessageLikeRequest {
+    user_uuid: number;
+}
+
+export interface MessageUndoLikeRequest {
+    user_uuid: number;
+}
