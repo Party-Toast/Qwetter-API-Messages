@@ -1,5 +1,6 @@
 import express, { Express } from 'express';
 import { json } from 'body-parser';
+import cors from 'cors';
 
 class App {
     public app: Express;
@@ -16,6 +17,7 @@ class App {
 
     private initializeMiddlewares() {
         this.app.use(json());
+        this.app.use(cors());
     }
     // TODO: Create controller interface class to replace any
     private initializeControllers(controllers: Array<any>) {

@@ -18,7 +18,6 @@ export interface MessageCreationRequest {
     avatar: string;
     content: string;
     timestamp: string;
-    liked_user_uuids: string;
 }
 
 export interface MessageLikeRequest {

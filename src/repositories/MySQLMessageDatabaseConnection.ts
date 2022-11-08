@@ -24,7 +24,7 @@ const messages: Array<Message> = [
         username: 'SytseWalraven',
         avatar: 'INSERT_AVATAR',
         content: 'Goodbye world',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date('2022-11-07').toISOString(),
         liked_user_uuids: [
             0
         ]
@@ -37,7 +37,7 @@ const messages: Array<Message> = [
         username: 'JDoe',
         avatar: 'INSERT_AVATAR',
         content: 'Hello again',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date('2022-10-01').toISOString(),
         liked_user_uuids: []
     },
 ]
@@ -139,6 +139,7 @@ export default class MySQLMessageDatabaseConnection implements IDatabaseConnecti
         message.liked_user_uuids.splice(userIndex, 1);
         return message;
     }
+    
     public deleteMessage = async (uuid: number): Promise<Message | undefined> => {
         const index = messages.findIndex(message => message.uuid === uuid);
         if(index === -1) {

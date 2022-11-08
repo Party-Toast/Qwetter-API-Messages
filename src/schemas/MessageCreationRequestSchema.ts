@@ -21,9 +21,6 @@ const schema = {
         },
         "timestamp": {
             "type": "string"
-        },
-        "liked_user_uuids": {
-            "type": "string"
         }
     },
     "required": [
@@ -31,7 +28,6 @@ const schema = {
         "content",
         "firstName",
         "lastName",
-        "liked_user_uuids",
         "timestamp",
         "user_uuid",
         "username"
