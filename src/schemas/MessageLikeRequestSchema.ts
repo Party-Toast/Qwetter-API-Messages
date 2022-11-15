@@ -2,7 +2,7 @@ const schema = {
     "type": "object",
     "properties": {
         "user_uuid": {
-            "type": "number"
+            "type": "string"
         }
     },
     "required": [

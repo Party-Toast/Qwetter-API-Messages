@@ -2,10 +2,10 @@ const schema = {
     "type": "object",
     "properties": {
         "uuid": {
-            "type": "number"
+            "type": "string"
         },
         "user_uuid": {
-            "type": "number"
+            "type": "string"
         },
         "username": {
             "type": "string"
@@ -28,7 +28,7 @@ const schema = {
         "liked_user_uuids": {
             "type": "array",
             "items": {
-                "type": "number"
+                "type": "string"
             }
         }
     },

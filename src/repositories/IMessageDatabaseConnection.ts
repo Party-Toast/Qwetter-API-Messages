@@ -2,10 +2,10 @@ import { Message, MessageCreationRequest, MessageLikeRequest, MessageUndoLikeReq
 
 export default interface IDatabaseConnection {
     getAllMessages (): Promise<Array<Message>>;
-    getMessageById (uuid: number): Promise<Message | undefined>;
-    getMessagesByUserId (user_uuid: number, page: number, per_page: number): Promise<Array<Message> | undefined>;
+    getMessageById (uuid: string): Promise<Message | undefined>;
+    getMessagesByUserId (user_uuid: string, page: number, per_page: number): Promise<Array<Message> | undefined>;
     createMessage (message: MessageCreationRequest): Promise<Message>;
-    likeMessage (uuid: number, user: MessageLikeRequest): Promise<Message | undefined>;
-    undoLikeMessage (uuid: number, user: MessageUndoLikeRequest): Promise<Message | undefined>;
-    deleteMessage (uuid: number): Promise<Message | undefined>;
+    likeMessage (uuid: string, user: MessageLikeRequest): Promise<Message | undefined>;
+    undoLikeMessage (uuid: string, user: MessageUndoLikeRequest): Promise<Message | undefined>;
+    deleteMessage (uuid: string): Promise<Message | undefined>;
 }

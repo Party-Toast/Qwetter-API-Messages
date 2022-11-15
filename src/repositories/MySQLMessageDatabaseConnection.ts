@@ -4,34 +4,34 @@ import mysql from 'mysql';
 
 const messages: Array<Message> = [
     {
-        uuid: 0,
-        user_uuid: 0,
+        uuid: '0',
+        user_uuid: '0',
         firstName: 'John',
         lastName: 'Doe',
         username: 'JDoe',
         avatar: 'INSERT_AVATAR',
-        content: 'Hello world',
+        content: 'Tagging test: @JDoe and @SytseWalraven are #firstusers! #prettycool and #stuff. Thanks @team! Visit www.google.com',
         timestamp: new Date().toISOString(),
         liked_user_uuids: [
-            1
+            '1'
         ]
     },
     {
-        uuid: 1,
-        user_uuid: 1,
+        uuid: '1',
+        user_uuid: '1',
         firstName: 'Sytse',
         lastName: 'Walraven',
         username: 'SytseWalraven',
         avatar: 'INSERT_AVATAR',
-        content: 'Goodbye world',
+        content: 'Advanced test: @user123 @123user @ #@test @#test test@mail.com test#test',
         timestamp: new Date('2022-11-07').toISOString(),
         liked_user_uuids: [
-            0
+            '0'
         ]
     },
     {
-        uuid: 2,
-        user_uuid: 0,
+        uuid: '2',
+        user_uuid: '0',
         firstName: 'John',
         lastName: 'Doe',
         username: 'JDoe',
@@ -73,11 +73,11 @@ export default class MySQLMessageDatabaseConnection implements IDatabaseConnecti
         return messages;
     }
 
-    public getMessageById = async (uuid: number): Promise<Message | undefined> => {
+    public getMessageById = async (uuid: string): Promise<Message | undefined> => {
         return messages.find(message => message.uuid === uuid);
     }
 
-    public getMessagesByUserId = async (user_uuid: number, page: number, per_page: number): Promise<Array<Message> | undefined> => {
+    public getMessagesByUserId = async (user_uuid: string, page: number, per_page: number): Promise<Array<Message> | undefined> => {
         // TODO: implement pagination
         console.log({page, per_page})
         return messages.filter(message => message.user_uuid === user_uuid);
@@ -85,7 +85,7 @@ export default class MySQLMessageDatabaseConnection implements IDatabaseConnecti
 
     public createMessage = async (message: MessageCreationRequest): Promise<Message> => {
         // TODO: improve UUID generation
-        const nextUuid = messages.length;
+        const nextUuid = messages.length.toString();
         const newMessage: Message = {
             uuid: nextUuid,
             user_uuid: message.user_uuid,
@@ -101,7 +101,7 @@ export default class MySQLMessageDatabaseConnection implements IDatabaseConnecti
         return newMessage;
     } 
 
-    public likeMessage = async (uuid: number, user: MessageLikeRequest): Promise<Message | undefined> => {
+    public likeMessage = async (uuid: string, user: MessageLikeRequest): Promise<Message | undefined> => {
         // If there exists no message with the provided UUID, return undefined
         const index = messages.findIndex(message => message.uuid === uuid);
         if(index === -1) {
@@ -120,7 +120,7 @@ export default class MySQLMessageDatabaseConnection implements IDatabaseConnecti
         return message;
     }
     
-    public undoLikeMessage = async (uuid: number, user: MessageUndoLikeRequest): Promise<Message | undefined> => {
+    public undoLikeMessage = async (uuid: string, user: MessageUndoLikeRequest): Promise<Message | undefined> => {
         // If there exists no message with the provided UUID, return undefined
         const messageIndex = messages.findIndex(message => message.uuid === uuid);
         if(messageIndex === -1) {
@@ -140,7 +140,7 @@ export default class MySQLMessageDatabaseConnection implements IDatabaseConnecti
         return message;
     }
     
-    public deleteMessage = async (uuid: number): Promise<Message | undefined> => {
+    public deleteMessage = async (uuid: string): Promise<Message | undefined> => {
         const index = messages.findIndex(message => message.uuid === uuid);
         if(index === -1) {
             return undefined;

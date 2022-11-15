@@ -18,6 +18,8 @@ class App {
     private initializeMiddlewares() {
         this.app.use(json());
         this.app.use(cors());
+        // this.app.use(function(req,res,next){setTimeout(next,1000)}); // artificial latency
+
     }
     // TODO: Create controller interface class to replace any
     private initializeControllers(controllers: Array<any>) {

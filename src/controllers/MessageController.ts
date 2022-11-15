@@ -40,7 +40,7 @@ export default class MessageController {
     }
 
     public getMessageById = async (request: Request, response: Response) => {
-        const uuid: number = parseInt(request.params.uuid);
+        const uuid: string = request.params.uuid;
         this.messageService.getMessageById(uuid).then((message) => {
             if(message === undefined) {
                 response.status(404).send(`No message with uuid ${uuid} was found.`);
@@ -57,7 +57,7 @@ export default class MessageController {
          };         
         const query = request.query as unknown as Query;
 
-        const user_uuid: number = parseInt(request.params.user_uuid);
+        const user_uuid: string = request.params.user_uuid;
         const page: number | undefined = isNaN(parseInt(query.page)) ? undefined : parseInt(query.page);
         const per_page: number | undefined = isNaN(parseInt(query.per_page)) ? undefined : parseInt(query.per_page);
 
@@ -79,7 +79,7 @@ export default class MessageController {
     }
 
     public likeMessage = async (request: Request, response: Response) => {
-        const uuid: number = parseInt(request.params.uuid);
+        const uuid: string = request.params.uuid;
         const messageLikeRequest: MessageLikeRequest = request.body;
         this.messageService.likeMessage(uuid, messageLikeRequest).then((message) => {
             if(message === undefined) {
@@ -90,7 +90,7 @@ export default class MessageController {
     }
     
     public undoLikeMessage = async (request: Request, response: Response) => {
-        const uuid: number = parseInt(request.params.uuid);
+        const uuid: string = request.params.uuid;
         const messageUndoLikeRequest: MessageUndoLikeRequest = request.body;
         this.messageService.undoLikeMessage(uuid, messageUndoLikeRequest).then((message) => {
             if(message === undefined) {
@@ -101,7 +101,7 @@ export default class MessageController {
     }
     // DELETE
     public deleteMessage = async (request: Request, response: Response) => {
-        const uuid: number = parseInt(request.params.uuid);
+        const uuid: string = request.params.uuid;
         this.messageService.deleteMessage(uuid).then((message) => {
             if(message === undefined) {
                 response.status(204);

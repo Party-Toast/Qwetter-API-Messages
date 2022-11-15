@@ -12,11 +12,11 @@ export default class MessageService {
         return this.databaseConnection.getAllMessages();
     };
     
-    public getMessageById = async (uuid: number): Promise<Message | undefined> => {
+    public getMessageById = async (uuid: string): Promise<Message | undefined> => {
         return this.databaseConnection.getMessageById(uuid);
     }
 
-    public getMessagesByUserId = async (user_uuid: number, page: number | undefined, per_page: number | undefined): Promise<Array<Message> | undefined> => {
+    public getMessagesByUserId = async (user_uuid: string, page: number | undefined, per_page: number | undefined): Promise<Array<Message> | undefined> => {
         const DEFAULT_PAGE = 1;
         const DEFAULT_PER_PAGE = 20; 
         
@@ -33,15 +33,15 @@ export default class MessageService {
         return this.databaseConnection.createMessage(message);
     };  
 
-    public likeMessage = async (uuid: number, user: MessageLikeRequest): Promise<Message | undefined> => {
+    public likeMessage = async (uuid: string, user: MessageLikeRequest): Promise<Message | undefined> => {
         return this.databaseConnection.likeMessage(uuid, user);
     }
     
-    public undoLikeMessage = async (uuid: number, user: MessageUndoLikeRequest): Promise<Message | undefined> => {
+    public undoLikeMessage = async (uuid: string, user: MessageUndoLikeRequest): Promise<Message | undefined> => {
         return this.databaseConnection.undoLikeMessage(uuid, user);
     }
 
-    public deleteMessage = async (uuid: number): Promise<Message | undefined> => {
+    public deleteMessage = async (uuid: string): Promise<Message | undefined> => {
         return this.databaseConnection.deleteMessage(uuid);  
     };
 }

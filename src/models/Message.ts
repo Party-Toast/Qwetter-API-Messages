@@ -1,17 +1,17 @@
 export interface Message {
-    uuid: number;
-    user_uuid: number;
+    uuid: string;
+    user_uuid: string;
     username: string;
     firstName: string;
     lastName: string;
     avatar: string;
     content: string;
     timestamp: string;
-    liked_user_uuids: Array<number>; // Array of user UUIDs
+    liked_user_uuids: Array<string>; // Array of user UUIDs
 }
 
 export interface MessageCreationRequest {
-    user_uuid: number;
+    user_uuid: string;
     username: string;
     firstName: string;
     lastName: string;
@@ -21,9 +21,9 @@ export interface MessageCreationRequest {
 }
 
 export interface MessageLikeRequest {
-    user_uuid: number;
+    user_uuid: string;
 }
 
 export interface MessageUndoLikeRequest {
-    user_uuid: number;
+    user_uuid: string;
 }
