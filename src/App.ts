@@ -1,7 +1,7 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express } from 'express';
 import { json } from 'body-parser';
 import cors from 'cors';
-import axios from 'axios';
+import keycloak from './middlewares/keycloak';
 
 class App {
     public app: Express;
@@ -17,28 +17,7 @@ class App {
     }
 
     private initializeMiddlewares() {
-        // Keycloak authentication/authorization check
-        this.app.use(async (request: Request, response: Response, next) => {
-            const authorizationHeader = request.headers.authorization;
-            // If no authorization header was provided, return 401
-            if(!authorizationHeader) {
-                response.status(401).send();
-            }
-
-            const headers = {
-                "authorization": authorizationHeader
-            }
-            // Fetch user info 
-            await axios.get(`${process.env.AUTH_URL}/realms/${process.env.AUTH_REALM}/protocol/openid-connect/userinfo`, { headers })
-                // If fetch was successful, continue request
-                .then(res => {
-                    next();
-                })
-                // Else, return 401
-                .catch(err => {
-                    response.status(401).send();
-                })
-        });
+        this.app.use(keycloak);
         this.app.use(json());
         this.app.use(cors());
         // this.app.use(function(req,res,next){setTimeout(next,1000)}); // artificial latency
