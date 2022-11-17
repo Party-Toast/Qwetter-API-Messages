@@ -2,6 +2,8 @@ import express, { Express } from 'express';
 import { json } from 'body-parser';
 import cors from 'cors';
 import keycloak from './middlewares/keycloak';
+import swaggerUi from 'swagger-ui-express'
+import router from './routes'
 
 class App {
     public app: Express;
@@ -13,11 +15,23 @@ class App {
         this.port = port;
 
         this.initializeMiddlewares();
-        this.initializeControllers(controllers);
+        this.initializeRoutes();
+        // this.initializeControllers(controllers);
     }
 
     private initializeMiddlewares() {
-        this.app.use(keycloak);
+        this.app.use(express.static("dist"));
+
+        this.app.use(
+            "/docs",
+            swaggerUi.serve,
+            swaggerUi.setup(undefined, {
+                swaggerOptions: {
+                url: "/swagger.json",
+                },
+            })
+        );
+        // this.app.use(keycloak);
         this.app.use(json());
         this.app.use(cors());
         // this.app.use(function(req,res,next){setTimeout(next,1000)}); // artificial latency
@@ -28,6 +42,10 @@ class App {
         controllers.forEach((controller: any) => {
             this.app.use('/', controller.router);
         });
+    }
+
+    private initializeRoutes() {
+        this.app.use(router);        
     }
 
     public listen() {

@@ -3,6 +3,8 @@ import { Message, MessageCreationRequest, MessageLikeRequest, MessageUndoLikeReq
 
 export default class MessageService {
     public databaseConnection: MySQLMessageDatabaseConnection;
+    private DEFAULT_PAGE = 1;
+    private DEFAULT_PER_PAGE = 20; 
 
     constructor() {
         this.databaseConnection = new MySQLMessageDatabaseConnection();
@@ -16,16 +18,7 @@ export default class MessageService {
         return this.databaseConnection.getMessageById(uuid);
     }
 
-    public getMessagesByUserId = async (user_uuid: string, page: number | undefined, per_page: number | undefined): Promise<Array<Message> | undefined> => {
-        const DEFAULT_PAGE = 1;
-        const DEFAULT_PER_PAGE = 20; 
-        
-        if(!page) {
-            page = DEFAULT_PAGE;
-        }
-        if(!per_page) {
-            per_page = DEFAULT_PER_PAGE;
-        }
+    public getMessagesByUserId = async (user_uuid: string, page: number | undefined = this.DEFAULT_PAGE, per_page: number | undefined = this.DEFAULT_PER_PAGE): Promise<Array<Message> | undefined> => {
         return this.databaseConnection.getMessagesByUserId(user_uuid, page, per_page);
     }
 
