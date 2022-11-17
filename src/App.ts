@@ -10,18 +10,17 @@ class App {
     public port: Number;
 
     // TODO: Create controller interface class to replace any
-    constructor(controllers: Array<any>, port: Number) {
+    constructor(port: Number) {
         this.app = express();
         this.port = port;
 
         this.initializeMiddlewares();
         this.initializeRoutes();
-        // this.initializeControllers(controllers);
     }
 
     private initializeMiddlewares() {
+        // Swagger
         this.app.use(express.static("dist"));
-
         this.app.use(
             "/docs",
             swaggerUi.serve,
@@ -31,11 +30,15 @@ class App {
                 },
             })
         );
-        // this.app.use(keycloak);
+
+        // Authentication
+        this.app.use(keycloak);
+
         this.app.use(json());
         this.app.use(cors());
-        // this.app.use(function(req,res,next){setTimeout(next,1000)}); // artificial latency
 
+        // Artificial latency
+        // this.app.use(function(req,res,next){setTimeout(next,1000)});
     }
     // TODO: Create controller interface class to replace any
     private initializeControllers(controllers: Array<any>) {

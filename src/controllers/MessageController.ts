@@ -1,12 +1,7 @@
-import { JSONSchemaType } from 'ajv';
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import { MessageCreationRequest, MessageLikeRequest, MessageUndoLikeRequest } from '../models/Message';
 import MessageService from '../services/MessageService';
-import SchemaValidator from '../utils/SchemaValidator';
 import { Message } from '../models/Message';
-import MessageCreationRequestSchema from '../schemas/MessageCreationRequestSchema';
-import MessageLikeRequestSchema from '../schemas/MessageLikeRequestSchema';
-import MessageUndoLikeRequestSchema from '../schemas/MessageUndoLikeRequestSchema';
 import { Route, Get, Query, Path, Post, Body, Delete } from 'tsoa'
 
 @Route("/messages")
@@ -14,35 +9,23 @@ export default class MessageController {
     public path = '/messages';
     public router = Router();
     public messageService: MessageService;
-    public validator: SchemaValidator;
-    public messageCreationRequestSchema: JSONSchemaType<MessageCreationRequest> = MessageCreationRequestSchema;
-    public messageLikeRequestSchema: JSONSchemaType<MessageLikeRequest> = MessageLikeRequestSchema;
-    public messageUndoLikeRequestSchema: JSONSchemaType<MessageUndoLikeRequest> = MessageUndoLikeRequestSchema;
 
     constructor() {
-        this.validator = new SchemaValidator();
         this.messageService = new MessageService();
-        this.intializeRoutes();
-    }
-
-    public intializeRoutes() {
-        // this.router.get(this.path, async(req, res) => {
-        //     const messages = await this.getAllMessages();
-        //     return res.send(messages);
-        // });
-        // this.router.get(`${this.path}/:uuid`, this.getMessageById);
-        // this.router.get(`${this.path}/user/:user_uuid`, this.getMessagesByUserId);
-        // this.router.post(this.path, this.validator.validateBody(this.messageCreationRequestSchema), this.createMessage);
-        // this.router.post(`${this.path}/like/:uuid`, this.validator.validateBody(this.messageLikeRequestSchema), this.likeMessage);
-        // this.router.post(`${this.path}/undo_like/:uuid`, this.validator.validateBody(this.messageUndoLikeRequestSchema), this.undoLikeMessage);
-        this.router.delete(`${this.path}/:uuid`, this.deleteMessage);
     }
     
+    /**
+     * Retrieves the details of all existing messages.
+     */
     @Get("")
     public async getAllMessages(): Promise<Array<Message>> {
         return await this.messageService.getAllMessages();
     }
 
+    /**
+     * Retrieves the details of a specific message.
+     * @param uuid The message's UUID
+     */
     @Get("/:uuid")
     public async getMessageById(
         @Path() uuid: string
@@ -50,6 +33,12 @@ export default class MessageController {
         return await this.messageService.getMessageById(uuid);
     }
 
+    /**
+     * Retrieves a list a messages by a specific user
+     * @param user_uuid The UUID of the user
+     * @param page The page of messages
+     * @param per_page The amount of messages per page
+     */
     @Get("/user/:user_uuid")
     public async getMessagesByUserId(
         @Path() user_uuid: string, 
@@ -59,6 +48,10 @@ export default class MessageController {
         return await this.messageService.getMessagesByUserId(user_uuid, page, per_page);
     }
     
+    /**
+     * Creates a new message
+     * @param messageCreationRequest Required data to create a new message
+     */
     @Post("")
     public async createMessage(
         @Body() messageCreationRequest: MessageCreationRequest
@@ -66,6 +59,11 @@ export default class MessageController {
         return await this.messageService.createMessage(messageCreationRequest);
     }
 
+    /**
+     * Leaves a like on a message
+     * @param uuid The message's UUID
+     * @param messageLikeRequest Required data to like a message
+     */
     @Post("/like/:uuid")
     public async likeMessage(
         @Path() uuid: string, 
@@ -74,6 +72,11 @@ export default class MessageController {
         return await this.messageService.likeMessage(uuid, messageLikeRequest);
     }
     
+    /**
+     * Removes a like from a message
+     * @param uuid The message's UUID
+     * @param messageUndoLikeRequest Required data to like a message
+     */
     @Post("/undo_like/:uuid")
     public async undoLikeMessage (
         @Path() uuid: string,
@@ -82,6 +85,10 @@ export default class MessageController {
         return await this.messageService.undoLikeMessage(uuid, messageUndoLikeRequest);
     }
 
+    /**
+     * Deletes a message
+     * @param uuid 
+     */
     @Delete("/:uuid")
     public async deleteMessage(
         @Path() uuid: string
