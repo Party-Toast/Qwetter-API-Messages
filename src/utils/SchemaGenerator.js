@@ -23,6 +23,4 @@ modelFileNames.forEach(modelFileName => {
       `const schema = ${JSON.stringify(value, null, 4)} as const;\nexport default schema;`
     );
   }
-})
-
-
+});

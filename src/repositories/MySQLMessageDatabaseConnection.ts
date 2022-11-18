@@ -79,7 +79,11 @@ export default class MySQLMessageDatabaseConnection implements IDatabaseConnecti
 
     public getMessagesByUserId = async (user_uuid: string, page: number, per_page: number): Promise<Array<Message> | undefined> => {
         // TODO: implement pagination
-        console.log({page, per_page})
+        
+        // TODO: verify if user exists through user service
+        if (!messages.find(message => message.user_uuid === user_uuid)) {
+            return undefined;
+        }
         return messages.filter(message => message.user_uuid === user_uuid);
     }
 

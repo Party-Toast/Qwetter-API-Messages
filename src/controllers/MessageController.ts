@@ -1,4 +1,3 @@
-import { Router } from 'express';
 import { MessageCreationRequest, MessageLikeRequest, MessageUndoLikeRequest } from '../models/Message';
 import MessageService from '../services/MessageService';
 import { Message } from '../models/Message';
@@ -6,8 +5,6 @@ import { Route, Get, Query, Path, Post, Body, Delete } from 'tsoa'
 
 @Route("/messages")
 export default class MessageController {
-    public path = '/messages';
-    public router = Router();
     public messageService: MessageService;
 
     constructor() {
