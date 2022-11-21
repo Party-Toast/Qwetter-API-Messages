@@ -9,7 +9,6 @@ class App {
     public app: Express;
     public port: Number;
 
-    // TODO: Create controller interface class to replace any
     constructor(port: Number) {
         this.app = express();
         this.port = port;
@@ -39,12 +38,6 @@ class App {
 
         // Artificial latency
         // this.app.use(function(req,res,next){setTimeout(next,1000)});
-    }
-    // TODO: Create controller interface class to replace any
-    private initializeControllers(controllers: Array<any>) {
-        controllers.forEach((controller: any) => {
-            this.app.use('/', controller.router);
-        });
     }
 
     private initializeRoutes() {
