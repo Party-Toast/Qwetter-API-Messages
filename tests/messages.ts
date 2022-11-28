@@ -1,10 +1,11 @@
 import MessageController from '../src/controllers/MessageController'; 
+import MessageService from '../src/services/MessageService';
 import { expect } from 'chai';
 import Ajv, { JSONSchemaType } from 'ajv';
 import { Message, MessageCreationRequest, MessageLikeRequest, MessageUndoLikeRequest } from '../src/models/Message';
 import MessageSchema from '../src/schemas/MessageSchema';
 
-describe('Message controller', () => { 
+describe('MessageController', () => { 
     var messageController: MessageController;
 
     // Setup for type validation
@@ -152,5 +153,5 @@ describe('Message controller', () => {
 
             expect(message).to.be.undefined;
         });
-    })
-})
+    });
+});
