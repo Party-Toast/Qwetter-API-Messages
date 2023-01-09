@@ -7,6 +7,8 @@ import MessageCreationRequestSchema from '../schemas/MessageCreationRequestSchem
 import MessageLikeRequestSchema from '../schemas/MessageLikeRequestSchema';
 import MessageUndoLikeRequestSchema from '../schemas/MessageUndoLikeRequestSchema';
 
+const AUTH_IS_DISABLED = true;
+
 const PATH = "/messages"
 const router = Router();
 const messageController = new MessageController();
@@ -51,7 +53,7 @@ router.get(`${PATH}/user/:user_uuid`, async(request: Request, response: Response
 router.post(PATH, validator.validateBody(messageCreationRequestSchema), async(request: Request, response: Response) => {
     const messageCreationRequest: MessageCreationRequest = request.body;
     // Only the user with the uuid in the request body can create a message for that user
-    if(messageCreationRequest.user_uuid !== response.locals.user_uuid) {
+    if(messageCreationRequest.user_uuid !== response.locals.user_uuid && !AUTH_IS_DISABLED ) {
         response.status(401).send("Unauthorized");
         return;
     }
@@ -64,7 +66,7 @@ router.post(`${PATH}/like/:uuid`, validator.validateBody(messageLikeRequestSchem
     const uuid: string = request.params.uuid;
     const messageLikeRequest: MessageLikeRequest = request.body;
     // Only the user with the uuid in the request body can like a message for that user
-    if(messageLikeRequest.user_uuid !== response.locals.user_uuid) {
+    if(messageLikeRequest.user_uuid !== response.locals.user_uuid && !AUTH_IS_DISABLED) {
         response.status(401).send("Unauthorized");
         return;
     }
@@ -80,7 +82,7 @@ router.post(`${PATH}/undo_like/:uuid`, validator.validateBody(messageUndoLikeReq
     const uuid: string = request.params.uuid;
     const messageUndoLikeRequest: MessageUndoLikeRequest = request.body;
     // Only the user with the uuid in the request body can undo a like for that user
-    if(messageUndoLikeRequest.user_uuid !== response.locals.user_uuid) {
+    if(messageUndoLikeRequest.user_uuid !== response.locals.user_uuid && !AUTH_IS_DISABLED) {
         response.status(401).send("Unauthorized");
         return;
     }

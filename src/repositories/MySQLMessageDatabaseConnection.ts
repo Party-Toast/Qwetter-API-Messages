@@ -2,46 +2,6 @@ import { Message, MessageCreationRequest, MessageLikeRequest, MessageUndoLikeReq
 import IDatabaseConnection from "./IMessageDatabaseConnection";
 import mysql from 'mysql';
 
-// const messages: Array<Message> = [
-//     {
-//         uuid: '0',
-//         user_uuid: '0',
-//         firstName: 'John',
-//         lastName: 'Doe',
-//         username: 'jdoe',
-//         avatar: 'INSERT_AVATAR',
-//         content: 'Tagging test: @jdoe and @sytsewalraven are #firstusers! #prettycool and #stuff. Thanks @team! Visit www.google.com',
-//         timestamp: new Date().toISOString(),
-//         liked_user_uuids: [
-//             '1'
-//         ]
-//     },
-//     {
-//         uuid: '1',
-//         user_uuid: '1',
-//         firstName: 'Sytse',
-//         lastName: 'Walraven',
-//         username: 'sytsewalraven',
-//         avatar: 'INSERT_AVATAR',
-//         content: 'Advanced test: @user123 @123user @ #@test @#test test@mail.com test#test',
-//         timestamp: new Date('2022-11-07').toISOString(),
-//         liked_user_uuids: [
-//             '0'
-//         ]
-//     },
-//     {
-//         uuid: '2',
-//         user_uuid: '0',
-//         firstName: 'John',
-//         lastName: 'Doe',
-//         username: 'jdoe',
-//         avatar: 'INSERT_AVATAR',
-//         content: 'Hello again',
-//         timestamp: new Date('2022-10-01').toISOString(),
-//         liked_user_uuids: []
-//     },
-// ]
-
 export default class MySQLMessageDatabaseConnection implements IDatabaseConnection {
     public connection;
 
@@ -61,7 +21,6 @@ export default class MySQLMessageDatabaseConnection implements IDatabaseConnecti
                 if (err) {
                     reject(err);
                 }
-                console.log('should fire first');
                 resolve(rows);
             })
         });
@@ -71,7 +30,6 @@ export default class MySQLMessageDatabaseConnection implements IDatabaseConnecti
         let messages: Array<Message> = [];
         const query = 'SELECT * FROM messages';
         const rows = await this.executeQuery(query);
-        console.log('should fire second');
         rows.forEach((row: any) => {
             let message: Message = {
                 uuid: row.uuid ?? null,
@@ -90,20 +48,44 @@ export default class MySQLMessageDatabaseConnection implements IDatabaseConnecti
     }
 
     public getMessageById = async (uuid: string): Promise<Message | undefined> => {
-        return undefined;
-        // return messages.find(message => message.uuid === uuid);
+        const query = `SELECT * FROM messages WHERE uuid = '${uuid}'`;
+        const rows = await this.executeQuery(query);
+        if (rows.length === 0) {
+            return undefined;
+        }
+        let message: Message = {
+            uuid: rows[0].uuid ?? null,
+            user_uuid: rows[0].user_uuid ?? null,
+            firstName: rows[0].firstName ?? null,
+            lastName: rows[0].lastName ?? null,
+            username: rows[0].username ?? null,
+            avatar: rows[0].avatar ?? null,
+            content: rows[0].content ?? null,
+            timestamp: rows[0].timestamp ?? null,
+            liked_user_uuids: rows[0].liked_user_uuids ?? null
+        }
+        return message;
     }
 
     public getMessagesByUserId = async (user_uuid: string, page: number, per_page: number): Promise<Array<Message> | undefined> => {
-        return undefined;
-        
-        // // TODO: implement pagination
-        
-        // // TODO: verify if user exists through user service
-        // if (!messages.find(message => message.user_uuid === user_uuid)) {
-        //     return undefined;
-        // }
-        // return messages.filter(message => message.user_uuid === user_uuid);
+        const query = `SELECT * FROM messages WHERE user_uuid = '${user_uuid}' LIMIT ${per_page} OFFSET ${page * per_page}`;
+        const rows = await this.executeQuery(query);
+        let messages: Array<Message> = [];
+        rows.forEach((row: any) => {
+            let message: Message = {
+                uuid: row.uuid ?? null,
+                user_uuid: row.user_uuid ?? null,
+                firstName: row.firstName ?? null,
+                lastName: row.lastName ?? null,
+                username: row.username ?? null,
+                avatar: row.avatar ?? null,
+                content: row.content ?? null,
+                timestamp: row.timestamp ?? null,
+                liked_user_uuids: row.liked_user_uuids ?? null
+            }
+            messages.push(message);
+        });
+        return messages;
     }
 
     public createMessage = async (message: MessageCreationRequest): Promise<Message> => {

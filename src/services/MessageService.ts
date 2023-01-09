@@ -1,13 +1,15 @@
 import MySQLMessageDatabaseConnection from "../repositories/MySQLMessageDatabaseConnection";
+import MongoDBMessageDatabaseConnection from "../repositories/MongoDBMessageDatabaseConnection";
 import { Message, MessageCreationRequest, MessageLikeRequest, MessageUndoLikeRequest } from "../models/Message";
 
 export default class MessageService {
-    public databaseConnection: MySQLMessageDatabaseConnection;
+    public databaseConnection;
     private DEFAULT_PAGE = 1;
     private DEFAULT_PER_PAGE = 20; 
 
     constructor() {
-        this.databaseConnection = new MySQLMessageDatabaseConnection();
+        // this.databaseConnection = new MySQLMessageDatabaseConnection();
+        this.databaseConnection = new MongoDBMessageDatabaseConnection();
     }
 
     public getAllMessages = async (): Promise<Array<Message>> => {
