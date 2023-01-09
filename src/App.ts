@@ -31,7 +31,7 @@ class App {
         );
 
         // Authentication
-        this.app.use(keycloak);
+        // this.app.use(keycloak);
 
         this.app.use(json());
         this.app.use(cors());
@@ -45,7 +45,10 @@ class App {
     }
 
     public listen() {
-        this.app.listen(this.port, () => {
+        // For local development
+        this.app.listen(this.port, () => { 
+        // For docker development
+        // this.app.listen(`10.10.0.11:${this.port}`, () => {
             console.log(`[server]: Listening on http://localhost:${this.port}`);
         });
     }
