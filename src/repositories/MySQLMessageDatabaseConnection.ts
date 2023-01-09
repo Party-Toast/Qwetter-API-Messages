@@ -48,10 +48,10 @@ export default class MySQLMessageDatabaseConnection implements IDatabaseConnecti
     constructor() {
         // temporary hard-coded values, should use .env file but there are some issues with .env files and constructors
         this.connection = mysql.createConnection({
-            host: "localhost",
-            user: "root",
-            password: "",
-            database: "qwetter"
+            host: process.env.MYSQL_HOST,
+            user: process.env.MYSQL_USER,
+            password: process.env.MYSQL_PASSWORD,
+            database: process.env.MYSQL_DATABASE
         });
     }
 
