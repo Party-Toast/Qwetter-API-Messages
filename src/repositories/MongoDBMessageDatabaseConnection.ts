@@ -2,8 +2,8 @@ import IDatabaseConnection from "./IMessageDatabaseConnection";
 import { Message, MessageLikeRequest, MessageUndoLikeRequest, MessageCreationRequest } from "../models/Message";
 import { ObjectId } from "mongodb";
 
-// const uri = process.env.MONGODB_URI as string;
-const uri = "mongodb+srv://sytsewalraven:kcMBu6P5XbjYJyx@qwettermessagescluster.rbs4v6u.mongodb.net/?retryWrites=true&w=majority";
+const uri = process.env.MONGODB_URI as string;
+
 export default class MongoDBMessageDatabaseConnection implements IDatabaseConnection {
     private client;
     private collection;
@@ -14,7 +14,7 @@ export default class MongoDBMessageDatabaseConnection implements IDatabaseConnec
         this.collection = this.client.db("Qwetter").collection("Messages");
     }
 
-    private createUserFromResult = (result: any): Message => {
+    private createMessageFromResult = (result: any): Message => {
         let message: Message = {
             uuid: result._id,
             user_uuid: result.user_uuid,
@@ -32,10 +32,7 @@ export default class MongoDBMessageDatabaseConnection implements IDatabaseConnec
     public getAllMessages = async (): Promise<Array<Message>> => {
         return new Promise((resolve, reject) => {
             this.collection.find().sort({timestamp: -1}).toArray().then((results: any) => {
-                let messages: Array<Message> = [];
-                results.forEach((result: any) => {
-                    messages.push(this.createUserFromResult(result));
-                });
+                let messages = results.map((result: any) => { return this.createMessageFromResult(result) });
                 resolve(messages); 
             })
         });
@@ -50,7 +47,7 @@ export default class MongoDBMessageDatabaseConnection implements IDatabaseConnec
                     resolve(undefined);
                     return;
                 }
-                let message = this.createUserFromResult(result);
+                let message = this.createMessageFromResult(result);
                 resolve(message); 
             });
         });  
@@ -63,7 +60,7 @@ export default class MongoDBMessageDatabaseConnection implements IDatabaseConnec
             }).sort({ timestamp: -1 }).skip((page - 1) * per_page).limit(per_page).toArray().then((results: any) => {
                 let messages: Array<Message> = [];
                 results.forEach((message: any) => {
-                    messages.push(this.createUserFromResult(message));
+                    messages.push(this.createMessageFromResult(message));
                 });
                 resolve(messages); 
             });
@@ -90,21 +87,19 @@ export default class MongoDBMessageDatabaseConnection implements IDatabaseConnec
     }
 
     public deleteMessage = async (uuid: string): Promise<Message | undefined> => {
-        let message = await this.getMessageById(uuid);
-        if(message === undefined) {
-            return undefined;
-        }
         return new Promise((resolve, reject) => {
-            this.collection.deleteOne({
+            this.collection.findOneAndDelete({
                 _id: new ObjectId(uuid)
             }).then((result: any) => {
-                if(result.deletedCount === 0) {
+                if(result.value === null) {
                     resolve(undefined);
                     return;
                 }
-                resolve(message);  
+                let message = this.createMessageFromResult(result.value);
+                resolve(message); 
             });
-        }); 
+        });
+
     }
 
     public likeMessage = async (uuid: string, user: MessageLikeRequest): Promise<Message | undefined> => {
