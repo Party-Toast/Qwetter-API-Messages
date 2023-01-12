@@ -9,7 +9,7 @@
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q -r dotenv/config dist/src/index.js\"",
     "swagger": "tsoa spec",
     "schema": "node ./src/utils/schemaGenerator.js",
-    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register -r dotenv/config 'tests/**/*.ts'",
+    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register -r dotenv/config 'tests/**/*.ts' --exit",
     "docker-build": "docker build -t qwetter-api-messages .",
     "docker-run": "docker run -p 3002:3002 qwetter-api-messages"
   },
