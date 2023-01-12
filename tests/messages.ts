@@ -20,7 +20,7 @@ describe('MessageController', () => {
     describe('GET /messages', () => {
         it('Should get all messages', async () => {
             const messages = await messageController.getAllMessages();
-            
+            console.log(messages)
             expect(messages).to.be.a('array');
             if(messages.length > 0) {
                 expect(isValidMessage(messages[0])).to.be.true;

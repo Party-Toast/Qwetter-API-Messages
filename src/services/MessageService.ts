@@ -1,15 +1,20 @@
 import MySQLMessageDatabaseConnection from "../repositories/MySQLMessageDatabaseConnection";
 import MongoDBMessageDatabaseConnection from "../repositories/MongoDBMessageDatabaseConnection";
 import { Message, MessageCreationRequest, MessageLikeRequest, MessageUndoLikeRequest } from "../models/Message";
+import CloudAMQPEventBroker from "../broker/CloudAMQPEventBroker";
 
 export default class MessageService {
-    public databaseConnection;
+    private databaseConnection;
+    private eventBroker;
+
     private DEFAULT_PAGE = 1;
     private DEFAULT_PER_PAGE = 20; 
 
     constructor() {
         // this.databaseConnection = new MySQLMessageDatabaseConnection();
         this.databaseConnection = new MongoDBMessageDatabaseConnection();
+        this.eventBroker = new CloudAMQPEventBroker("messages", "qwetter-messages");
+        this.eventBroker.connect();
     }
 
     public getAllMessages = async (): Promise<Array<Message>> => {
@@ -25,7 +30,9 @@ export default class MessageService {
     }
 
     public createMessage = async (message: MessageCreationRequest): Promise<Message> => {
-        return this.databaseConnection.createMessage(message);
+        const createdMessagePromise = this.databaseConnection.createMessage(message);
+        this.eventBroker.send(createdMessagePromise);
+        return createdMessagePromise;
     };  
 
     public likeMessage = async (uuid: string, user: MessageLikeRequest): Promise<Message | undefined> => {

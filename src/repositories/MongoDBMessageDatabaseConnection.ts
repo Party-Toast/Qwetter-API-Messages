@@ -3,6 +3,7 @@ import { Message, MessageLikeRequest, MessageUndoLikeRequest, MessageCreationReq
 import { ObjectId } from "mongodb";
 
 const uri = process.env.MONGODB_URI as string;
+const database = "Qwetter";
 
 export default class MongoDBMessageDatabaseConnection implements IDatabaseConnection {
     private client;
@@ -11,12 +12,12 @@ export default class MongoDBMessageDatabaseConnection implements IDatabaseConnec
     constructor() {
         const { MongoClient, ServerApiVersion } = require('mongodb');
         this.client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-        this.collection = this.client.db("Qwetter").collection("Messages");
+        this.collection = this.client.db(database).collection("Messages");
     }
 
     private createMessageFromResult = (result: any): Message => {
         let message: Message = {
-            uuid: result._id,
+            uuid: result._id.toString(),
             user_uuid: result.user_uuid,
             username: result.username,
             firstName: result.firstName,
@@ -26,6 +27,7 @@ export default class MongoDBMessageDatabaseConnection implements IDatabaseConnec
             timestamp: result.timestamp,
             liked_user_uuids: result.liked_user_uuids ?? []
         };
+        console.log(message);
         return message;
     }
 
