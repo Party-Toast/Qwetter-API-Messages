@@ -1,36 +1,49 @@
 import client from 'amqplib';
+import { Message } from '../models/Message';
 
 export default class CloudAMQPEventBroker {
     private connection: any;
-    private channel: any = null;
-    private queueName;
-    private exchangeName;
+    private channels: any = {};
+    private databaseConnection: any;
 
-    constructor(queueName: string, exchangeName: string) {
-        this.queueName = queueName;
-        this.exchangeName = exchangeName;
+    constructor(databaseConnection: any) {
+        this.databaseConnection = databaseConnection;
     }
+
+    private getChannel = async (exchangeName: string) => {
+        if(!this.channels[exchangeName]) {
+            this.channels[exchangeName] = await this.connection.createChannel();
+            this.channels[exchangeName].assertExchange(exchangeName, 'topic', {durable: false});
+        }
+        return this.channels[exchangeName];
+    }
+
 
     public connect = async () => {
         this.connection = await client.connect(process.env.CLOUDAMQP_URL as string);
-        this.channel = await this.connection.createChannel();
-        // await this.channel.assertQueue(this.queueName);
-        await this.channel.assertExchange(this.exchangeName, 'fanout', { durable: false });
     }
 
-    public send = async (messagePromise: any) => {
-        if(!this.channel) {
-            await this.connect();
-        }
+    public createdMessageEvent = async (createdMessagePromise: Promise<Message | undefined>) => {
+        const exchange = 'messages';
+        const channel = await this.getChannel(exchange);
 
-        const message = await messagePromise;
+        const message = await createdMessagePromise;
 
         if(message !== undefined) {
             const serializedMessage = JSON.stringify(message);
-    
-            console.log(`Sending message: ${serializedMessage}`);
-            // this.channel.sendToQueue(this.queueName, Buffer.from(serializedMessage));
-            this.channel.publish(this.exchangeName, '', Buffer.from(serializedMessage));
+            channel.publish(exchange, 'message.created', Buffer.from(serializedMessage));
         }
-    }   
+    }
+
+    // public deletedMessageEvent = async (deletedMessagePromise: Promise<Message | undefined>) => {
+    //     const exchange = 'messages';
+    //     const channel = await this.getChannel(exchange);
+
+    //     const message = await deletedMessagePromise;
+
+    //     if(message !== undefined) {
+    //         const serializedMessage = JSON.stringify(message);
+    //         channel.publish(exchange, 'message-deleted', Buffer.from(serializedMessage));
+    //     }
+    // }
 }

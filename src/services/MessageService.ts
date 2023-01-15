@@ -13,7 +13,7 @@ export default class MessageService {
     constructor() {
         // this.databaseConnection = new MySQLMessageDatabaseConnection();
         this.databaseConnection = new MongoDBMessageDatabaseConnection();
-        this.eventBroker = new CloudAMQPEventBroker("messages", "qwetter-messages");
+        this.eventBroker = new CloudAMQPEventBroker(this.databaseConnection);
         this.eventBroker.connect();
     }
 
@@ -31,7 +31,7 @@ export default class MessageService {
 
     public createMessage = async (message: MessageCreationRequest): Promise<Message> => {
         const createdMessagePromise = this.databaseConnection.createMessage(message);
-        this.eventBroker.send(createdMessagePromise);
+        this.eventBroker.createdMessageEvent(createdMessagePromise);
         return createdMessagePromise;
     };  
 
@@ -44,6 +44,8 @@ export default class MessageService {
     }
 
     public deleteMessage = async (uuid: string): Promise<Message | undefined> => {
-        return this.databaseConnection.deleteMessage(uuid);  
+        const deletedMessagePromise = this.databaseConnection.deleteMessage(uuid);  
+        // this.eventBroker.deletedMessageEvent(deletedMessagePromise);
+        return deletedMessagePromise;
     };
 }

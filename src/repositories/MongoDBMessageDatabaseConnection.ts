@@ -27,7 +27,6 @@ export default class MongoDBMessageDatabaseConnection implements IDatabaseConnec
             timestamp: result.timestamp,
             liked_user_uuids: result.liked_user_uuids ?? []
         };
-        console.log(message);
         return message;
     }
 
