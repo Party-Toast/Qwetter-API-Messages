@@ -54,7 +54,7 @@ export default class MongoDBMessageDatabaseConnection implements IDatabaseConnec
         });  
     }
 
-    public getMessagesByUserId = async (user_uuid: string, page: number, per_page: number): Promise<Array<Message> | undefined> => {
+    public getMessagesByUserId = async (user_uuid: string, page: number | undefined = 1, per_page: number | undefined = 0): Promise<Array<Message> | undefined> => {
         return new Promise((resolve, reject) => {
             this.collection.find({
                 user_uuid: user_uuid

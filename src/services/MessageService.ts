@@ -7,9 +7,6 @@ export default class MessageService {
     private databaseConnection;
     private eventBroker;
 
-    private DEFAULT_PAGE = 1;
-    private DEFAULT_PER_PAGE = 20; 
-
     constructor() {
         // this.databaseConnection = new MySQLMessageDatabaseConnection();
         this.databaseConnection = new MongoDBMessageDatabaseConnection();
@@ -25,7 +22,7 @@ export default class MessageService {
         return this.databaseConnection.getMessageById(uuid);
     }
 
-    public getMessagesByUserId = async (user_uuid: string, page: number | undefined = this.DEFAULT_PAGE, per_page: number | undefined = this.DEFAULT_PER_PAGE): Promise<Array<Message> | undefined> => {
+    public getMessagesByUserId = async (user_uuid: string, page: number | undefined, per_page: number | undefined): Promise<Array<Message> | undefined> => {
         return this.databaseConnection.getMessagesByUserId(user_uuid, page, per_page);
     }
 
